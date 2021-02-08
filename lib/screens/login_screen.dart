@@ -35,6 +35,7 @@ class LoginPageState extends State<LoginPage> {
         padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
         onPressed: () {},
         child: Text('Login'),
+        textColor: Colors.white,
       ),
     );
 
