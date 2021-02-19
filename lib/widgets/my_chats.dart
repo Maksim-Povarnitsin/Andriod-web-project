@@ -1,6 +1,8 @@
+import 'package:chat/widgets/group_messages.dart';
+import 'package:chat/widgets/private_messages.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:chat/widgets/selecting_list.dart';
+import 'package:chat/widgets/select_list.dart';
 
 class MyChats extends StatefulWidget {
   @override
@@ -15,25 +17,20 @@ class _MyChatsState extends State<MyChats> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 1000,
-      // height: MediaQuery.of(context).size.height,
+      //height: 1000,
+      height: MediaQuery.of(context).size.height,
       child: PageView(
         scrollDirection: Axis.horizontal,
-        //physics: BouncingScrollPhysics(),
+        physics: ScrollPhysics(),
         controller: controller,
-        onPageChanged: (number) {
-          print("$number");
+        onPageChanged: (index) => {
           setState(() {
-            selectedIndex = number;
-          });
+            tabController.index = index;
+          })
         },
         children: <Widget>[
-          Container(
-            color: Colors.red,
-          ),
-          Container(
-            color: Colors.blue,
-          )
+          PrivateMessages(),
+          GroupMessages(),
         ],
       ),
     );

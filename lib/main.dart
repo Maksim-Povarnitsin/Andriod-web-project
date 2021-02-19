@@ -11,7 +11,7 @@ class Chat extends StatelessWidget {
       '/': (BuildContext context) => LoginPage(
             title: "Login",
           ),
-      '/second': (BuildContext context) => Chats()
+      '/second': (BuildContext context) => ChatsScreen()
     });
   }
 }
