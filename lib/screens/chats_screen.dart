@@ -1,7 +1,6 @@
 import 'dart:ui';
 
-import 'package:chat/widgets/my_chats.dart';
-import 'package:chat/widgets/select_list.dart';
+import 'package:chat/widgets/tabs.dart';
 
 import 'package:flutter/material.dart';
 
@@ -44,8 +43,9 @@ class ChatsScreenState extends State<ChatsScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            SelectList(),
-            MyChats(),
+            ChatsTabBar(),
+            //SelectList(),
+            //MyChats(),
           ],
         ),
       ),

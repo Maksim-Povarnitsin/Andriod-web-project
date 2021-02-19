@@ -154,7 +154,7 @@ conversations(BuildContext context) {
                         width: MediaQuery.of(context).size.width - 135,
                         child: Text(
                           conversationList[index]['message'] +
-                              " - " +
+                              " · " +
                               conversationList[index]['time'],
                           style: TextStyle(
                               fontSize: 15,
