@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:chat/screens/main_screen.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title}) : super(key: key);
@@ -33,8 +34,11 @@ class LoginPageState extends State<LoginPage> {
       child: MaterialButton(
         minWidth: MediaQuery.of(context).size.width,
         padding: EdgeInsets.fromLTRB(20, 15, 20, 15),
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, '/second');
+        },
         child: Text('Login'),
+        textColor: Colors.white,
       ),
     );
 
