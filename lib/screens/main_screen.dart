@@ -1,3 +1,4 @@
+import 'package:chat/widgets/drawer.dart';
 import 'package:chat/widgets/group_messages.dart';
 import 'package:chat/widgets/private_messages.dart';
 import 'package:flutter/cupertino.dart';
@@ -5,47 +6,22 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 
-class ChatsScreen extends StatefulWidget {
-  @override
-  ChatsScreenState createState() => ChatsScreenState();
-}
+class MainScreen extends StatelessWidget {
+  MainScreen({Key key}) : super(key: key);
 
-class ChatsScreenState extends State<ChatsScreen>
-    with SingleTickerProviderStateMixin {
   List<Widget> list = [
     Tab(text: "ЧАТЫ"),
     Tab(text: "ГРУППЫ"),
   ];
-
-  TabController _tabController;
-  int _selectedIndex;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: list.length, vsync: this);
-
-    _tabController.addListener(() {
-      setState(() {
-        _selectedIndex = _tabController.index;
-      });
-      print("Selected Index: " + _tabController.index.toString());
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+        backgroundColor: Colors.white,
+        resizeToAvoidBottomPadding: false,
         appBar: AppBar(
-            leading: IconButton(
-              padding: EdgeInsets.only(right: 20, left: 20),
-              icon: Icon(Icons.menu),
-              iconSize: 24.0,
-              color: Color(0xff191E24),
-              onPressed: () {},
-            ),
+            iconTheme: IconThemeData(color: Color(0xff191E24)),
             title: Text('Umbrella Chat',
                 style: TextStyle(
                     fontSize: 24.0,
@@ -63,7 +39,7 @@ class ChatsScreenState extends State<ChatsScreen>
               )
             ],
             bottom: TabBar(
-              controller: _tabController,
+              //controller: _tabController,
               tabs: list,
               labelStyle: TextStyle(
                   fontSize: 14.0,
@@ -79,11 +55,14 @@ class ChatsScreenState extends State<ChatsScreen>
                   letterSpacing: 1.5),
             )),
         body: TabBarView(
-          children: [
-            PrivateMessages(),
-            GroupMessages(),
+          children: <Widget>[
+            SingleChildScrollView(
+                physics: BouncingScrollPhysics(), child: PrivateMessages()),
+            SingleChildScrollView(
+                physics: BouncingScrollPhysics(), child: GroupMessages()),
           ],
         ),
+        drawer: AppDrawer(),
       ),
     );
   }

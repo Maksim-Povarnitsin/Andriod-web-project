@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:chat/screens/chats_screen.dart';
+import 'package:chat/screens/main_screen.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key key, this.title}) : super(key: key);
