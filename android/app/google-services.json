@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "986190493639",
+    "project_id": "chatik-a7711",
+    "storage_bucket": "chatik-a7711.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:986190493639:android:92643450ed3d6acaf58be2",
+        "android_client_info": {
+          "package_name": "com.ris_18.chatik"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "986190493639-bh8q2c05jqdg5b9cvl8r6ulbq14cn899.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCE1xtdyO3HgiZu1eCgAgFSTMeone5rj_I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "986190493639-bh8q2c05jqdg5b9cvl8r6ulbq14cn899.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
