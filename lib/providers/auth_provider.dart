@@ -1,6 +1,10 @@
+import 'package:chatik_app/services/navigation_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+
+import '../services/snackbar_service.dart';
+import '../services/navigation_service.dart';
 
 enum AuthStatus {
   NotAuthenticated,
@@ -29,12 +33,37 @@ class AuthProvider extends ChangeNotifier {
           email: _email, password: _pass);
       user = _result.user;
       status = AuthStatus.Authenticated;
-      print("Logged in");
+      SnackBarService.instance
+          .showSnackBarSuccess("Добро пожаловать, ${user.email}");
+      //Обновить время
       //Перейти на главную страницу
     } catch (e) {
       status = AuthStatus.Error;
-      print("Login Error");
+      SnackBarService.instance.showSnackBarError("Произошла ошибка");
       // Показать ошибку
+    }
+    notifyListeners();
+  }
+
+  void registerUserWithEmailAndPass(
+      String _email, String _pass, Future<void> onSuccess(String _uid)) async {
+    status = AuthStatus.Authenticating;
+    notifyListeners();
+    try {
+      UserCredential _result = await _auth.createUserWithEmailAndPassword(
+          email: _email, password: _pass);
+      user = _result.user;
+      status = AuthStatus.Authenticated;
+      await onSuccess(user.uid);
+      SnackBarService.instance
+          .showSnackBarSuccess("Успешная регистрация, ${user.email}");
+      //Обновить время
+      NavigationService.instance.goBack();
+      //Перейти на главную страницу
+    } catch (e) {
+      status = AuthStatus.Error;
+      user = null;
+      SnackBarService.instance.showSnackBarError("Произошла ошибка");
     }
     notifyListeners();
   }

@@ -4,6 +4,10 @@ import 'package:provider/provider.dart';
 
 import '../providers/auth_provider.dart';
 
+import '../services/snackbar_service.dart';
+
+import '../services/navigation_service.dart';
+
 class LoginPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -45,6 +49,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _createLoginPage() {
     return Builder(builder: (BuildContext _context) {
+      SnackBarService.instance.buildContext = context;
       _auth = Provider.of<AuthProvider>(_context);
       return Container(
         height: _deviceHeight,
@@ -180,7 +185,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget _registerButton() {
     return GestureDetector(
       onTap: () {
-        print("Hey!");
+        NavigationService.instance.navigateToPage("register");
       },
       child: Container(
         height: _deviceHeight * 0.06,
