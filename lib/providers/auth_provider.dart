@@ -23,6 +23,21 @@ class AuthProvider extends ChangeNotifier {
 
   AuthProvider() {
     _auth = FirebaseAuth.instance;
+    // _checkCurrentUserAuthentification();
+  }
+
+  void _autoLogin() {
+    if (user != null) {
+      NavigationService.instance.navigateToReplacement("home");
+    }
+  }
+
+  void _checkCurrentUserAuthentification() {
+    user = _auth.currentUser;
+    if (user != null) {
+      notifyListeners();
+      _autoLogin();
+    }
   }
 
   void loginUserWithEmailAndPassword(String _email, String _pass) async {
@@ -36,11 +51,11 @@ class AuthProvider extends ChangeNotifier {
       SnackBarService.instance
           .showSnackBarSuccess("Добро пожаловать, ${user.email}");
       //Обновить время
-      //Перейти на главную страницу
+      NavigationService.instance.navigateToReplacement("home");
     } catch (e) {
       status = AuthStatus.Error;
+      user = null;
       SnackBarService.instance.showSnackBarError("Произошла ошибка");
-      // Показать ошибку
     }
     notifyListeners();
   }
@@ -59,7 +74,7 @@ class AuthProvider extends ChangeNotifier {
           .showSnackBarSuccess("Успешная регистрация, ${user.email}");
       //Обновить время
       NavigationService.instance.goBack();
-      //Перейти на главную страницу
+      NavigationService.instance.navigateToReplacement("home");
     } catch (e) {
       status = AuthStatus.Error;
       user = null;

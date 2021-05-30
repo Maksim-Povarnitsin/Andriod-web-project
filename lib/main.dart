@@ -1,3 +1,4 @@
+import 'package:chatik_app/pages/home_page.dart';
 import 'package:chatik_app/pages/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
       routes: {
         "login": (BuildContext _context) => LoginPage(),
         "register": (BuildContext _context) => RegistrationPage(),
+        "home": (BuildContext _conext) => HomePage(),
       },
     );
   }
