@@ -38,7 +38,6 @@ class RecentConversationsPage extends StatelessWidget {
                   DatabaseService.instance.getUserConversations(_auth.user.uid),
               builder: (_context, _snapshot) {
                 var _data = _snapshot.data;
-                print(_snapshot.toString());
                 return _snapshot.hasData
                     ? ListView.builder(
                         itemCount: _data.length,

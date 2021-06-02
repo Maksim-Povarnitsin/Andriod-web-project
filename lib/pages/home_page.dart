@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import './profile_page.dart';
 import './recent_conv_page.dart';
+import './search_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -68,7 +69,7 @@ class _HomePageState extends State<HomePage>
     return TabBarView(
       controller: _tabController,
       children: <Widget>[
-        ProfilePage(_deviceHeight, _deviceWidth),
+        SearchPage(_deviceHeight, _deviceWidth),
         RecentConversationsPage(_deviceHeight, _deviceWidth),
         ProfilePage(_deviceHeight, _deviceWidth),
       ],

@@ -6,7 +6,7 @@ class ConversationSnippet {
   final String lastMessage;
   final String name;
   final String image;
-  final int unseenCount;
+  final String unseenCount;
   final Timestamp timestamp;
 
   ConversationSnippet(

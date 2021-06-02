@@ -36,14 +36,28 @@ class DatabaseService {
   }
 
   Stream<List<ConversationSnippet>> getUserConversations(String _uid) {
+    List<ConversationSnippet> snippets = new List();
     var _ref = _db
         .collection(_userCollection)
         .doc(_uid)
-        .collection(_conversationsCollection);
-    return _ref.snapshots().map((_snapshot) {
-      return _snapshot.docs.map((_doc) {
-        return ConversationSnippet.fromFirestore(_doc);
-      }).toList();
+        .collection(_conversationsCollection)
+        .snapshots();
+    _ref.forEach((elemen) {
+      elemen.docs.forEach((element) {
+        snippets.add(ConversationSnippet.fromFirestore(element));
+      });
     });
+    return Stream.value(snippets);
+  }
+
+  Stream<List<Contact>> getUsers(String _searchName) {
+    List<Contact> users = new List();
+    var _ref = _db.collection(_userCollection).snapshots();
+    _ref.forEach((elemen) {
+      elemen.docs.forEach((element) {
+        users.add(Contact.fromFirestore(element));
+      });
+    });
+    return Stream.value(users);
   }
 }
