@@ -1,4 +1,5 @@
 import 'package:chatik_app/models/conversation.dart';
+import 'package:chatik_app/models/message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/contact.dart';
 
@@ -33,6 +34,31 @@ class DatabaseService {
     return _ref.update({"lastSeen": Timestamp.now()});
   }
 
+  Future<void> sendMessage(String _conversationID, Message _message) {
+    var _ref = _db.collection(_conversationsCollection).doc(_conversationID);
+    var _messageType = "";
+    switch (_message.type) {
+      case (MessageType.Text):
+        _messageType = "text";
+        break;
+      case (MessageType.Image):
+        _messageType = "image";
+        break;
+    }
+    return _ref.update({
+      "messages": FieldValue.arrayUnion(
+        [
+          {
+            "message": _message.content,
+            "senderID": _message.senderID,
+            "timestamp": _message.timestamp,
+            "type": _messageType,
+          },
+        ],
+      ),
+    });
+  }
+
   Stream<Contact> getUserData(String _uid) {
     var _ref = _db.collection(_userCollection).doc(_uid);
     return _ref.get().asStream().map((_snapshot) {
@@ -64,5 +90,13 @@ class DatabaseService {
       });
     });
     return Stream.value(users);
+  }
+
+  Stream<Conversation> getConversation(String _conversationID) {
+    var _ref = _db.collection(_conversationsCollection).doc(_conversationID);
+    return _ref.snapshots().map((_snapshot) {
+      print(_snapshot.get("image"));
+      return Conversation.fromFirestore(_snapshot);
+    });
   }
 }

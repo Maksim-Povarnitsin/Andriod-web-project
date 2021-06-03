@@ -7,6 +7,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../providers/auth_provider.dart';
 import '../services/database_service.dart';
+import '../services/navigation_service.dart';
+import '../pages/conversation_page.dart';
 
 class RecentConversationsPage extends StatelessWidget {
   final double _height;
@@ -43,7 +45,19 @@ class RecentConversationsPage extends StatelessWidget {
                         itemCount: _data.length,
                         itemBuilder: (_context, _index) {
                           return ListTile(
-                            onTap: () {},
+                            onTap: () {
+                              NavigationService.instance.navigateToRoute(
+                                MaterialPageRoute(
+                                  builder: (BuildContext _context) {
+                                    return ConversationPage(
+                                        _data[_index].conversationID,
+                                        _data[_index].id,
+                                        _data[_index].name,
+                                        _data[_index].image);
+                                  },
+                                ),
+                              );
+                            },
                             title: Text(_data[_index].name),
                             subtitle: Text(_data[_index].lastMessage),
                             leading: Container(
