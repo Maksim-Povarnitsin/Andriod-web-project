@@ -1,4 +1,9 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:chatik_app/models/conversation.dart';
+import 'package:chatik_app/services/cloud_storage_service.dart';
+import 'package:chatik_app/services/media_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -31,9 +36,11 @@ class _ConversationPageState extends State<ConversationPage> {
   GlobalKey<FormState> _formKey;
   AuthProvider _auth;
   String _messageText;
+  ScrollController _listViewController;
 
   _ConversationPageState() {
     _formKey = GlobalKey<FormState>();
+    _listViewController = ScrollController();
     _messageText = "";
   }
   @override
@@ -77,9 +84,17 @@ class _ConversationPageState extends State<ConversationPage> {
           stream: DatabaseService.instance
               .getConversation(this.widget._conversationID),
           builder: (BuildContext _context, _snapshot) {
+            Timer(
+              Duration(microseconds: 50),
+              () {
+                _listViewController
+                    .jumpTo(_listViewController.position.maxScrollExtent);
+              },
+            );
             var _conversationData = _snapshot.data;
             if (_conversationData != null) {
               return ListView.builder(
+                controller: _listViewController,
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                 itemCount: _conversationData.messages.length,
                 itemBuilder: (BuildContext _context, int _index) {
@@ -107,7 +122,11 @@ class _ConversationPageState extends State<ConversationPage> {
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           !_isOwnMessage ? _userImageWidget() : Container(),
-          _textMessage(_isOwnMessage, _message.content, _message.timestamp)
+          _message.type == MessageType.Text
+              ? _textMessage(
+                  _isOwnMessage, _message.content, _message.timestamp)
+              : _imageMessage(
+                  _isOwnMessage, _message.content, _message.timestamp)
         ],
       ),
       padding: EdgeInsets.only(bottom: 10),
@@ -136,7 +155,7 @@ class _ConversationPageState extends State<ConversationPage> {
         : [Color.fromRGBO(69, 69, 69, 1), Color.fromRGBO(43, 43, 43, 1)];
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10),
-      height: _deviceHeight * 0.10,
+      height: _deviceHeight * 0.10 + (_message.length / 20 * 5.0),
       width: _deviceWidth * 0.75,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
@@ -248,8 +267,65 @@ class _ConversationPageState extends State<ConversationPage> {
       height: _deviceHeight * 0.05,
       width: _deviceHeight * 0.05,
       child: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () async {
+          var _pickedImage = await MediaService.instance.getImageFromLibrary();
+          if (_pickedImage != null) {
+            File _image = File(_pickedImage.path);
+            var _result = await CloudStorageService.instance
+                .uploadMediaMessage(_auth.user.uid, _image);
+            var _imageURL = await _result.ref.getDownloadURL();
+            await DatabaseService.instance.sendMessage(
+              this.widget._conversationID,
+              Message(
+                content: _imageURL,
+                senderID: _auth.user.uid,
+                timestamp: Timestamp.now(),
+                type: MessageType.Image,
+              ),
+            );
+          }
+        },
         child: Icon(Icons.camera_enhance),
+      ),
+    );
+  }
+
+  Widget _imageMessage(
+      bool _isOwnMessage, String _imageURL, Timestamp _timestamp) {
+    List<Color> _colorScheme = _isOwnMessage
+        ? [Colors.blue, Color.fromRGBO(42, 117, 188, 1)]
+        : [Color.fromRGBO(69, 69, 69, 1), Color.fromRGBO(43, 43, 43, 1)];
+    DecorationImage _image =
+        DecorationImage(image: NetworkImage(_imageURL), fit: BoxFit.cover);
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        gradient: LinearGradient(
+          colors: _colorScheme,
+          stops: [0.30, 0.70],
+          begin: Alignment.bottomLeft,
+          end: Alignment.topRight,
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          Container(
+            height: _deviceHeight * 0.30,
+            width: _deviceWidth * 0.40,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              image: _image,
+            ),
+          ),
+          Text(
+            timeago.format(_timestamp.toDate()),
+            style: TextStyle(color: Colors.white70),
+          ),
+        ],
       ),
     );
   }
