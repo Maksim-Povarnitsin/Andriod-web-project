@@ -66,6 +66,33 @@ class DatabaseService {
     });
   }
 
+  Future<void> createOrGetConversation(String _uid, String _recepientID,
+      Future<void> _onSuccess(String _conversationID)) async {
+    var _ref = _db.collection(_conversationsCollection);
+    var _userConversationRef = _db
+        .collection(_userCollection)
+        .doc(_uid)
+        .collection(_conversationsCollection);
+    try {
+      var conversation = await _userConversationRef.doc(_recepientID).get();
+      if (conversation.data() != null) {
+        //если чат уже есть
+        return _onSuccess(conversation.data()["conversationID"]);
+      } else {
+        // если нет
+        var _conversationRef = _ref.doc();
+        await _conversationRef.set({
+          "members": [_uid, _recepientID],
+          "ownerID": _uid,
+          "messages": [],
+        });
+        return _onSuccess(_conversationRef.id);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   Stream<List<ConversationSnippet>> getUserConversations(String _uid) {
     List<ConversationSnippet> snippets = new List();
     var _ref = _db

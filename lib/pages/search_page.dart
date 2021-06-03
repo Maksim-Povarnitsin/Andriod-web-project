@@ -1,4 +1,6 @@
 import 'package:chatik_app/models/contact.dart';
+import 'package:chatik_app/pages/conversation_page.dart';
+import 'package:chatik_app/services/navigation_service.dart';
 import 'package:flutter/material.dart';
 import '../services/database_service.dart';
 import '../providers/auth_provider.dart';
@@ -90,7 +92,25 @@ class _SearchPageState extends State<SearchPage> {
                       itemCount: _usersData.length,
                       itemBuilder: (BuildContext _context, int _index) {
                         var _currUser = _usersData[_index];
+                        var _recepientID = _usersData[_index].id;
                         return ListTile(
+                          onTap: () {
+                            DatabaseService.instance.createOrGetConversation(
+                                _auth.user.uid, _recepientID,
+                                (String _conversationID) {
+                              return NavigationService.instance.navigateToRoute(
+                                MaterialPageRoute(
+                                  builder: (_context) {
+                                    return ConversationPage(
+                                        _conversationID,
+                                        _recepientID,
+                                        _currUser.name,
+                                        _currUser.image);
+                                  },
+                                ),
+                              );
+                            });
+                          },
                           title: Text(_currUser.name),
                           leading: Container(
                             width: 50,
