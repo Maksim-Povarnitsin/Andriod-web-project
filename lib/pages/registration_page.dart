@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:chatik_app/providers/auth_provider.dart';
+import 'package:chatik_app/services/snackbar_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -51,6 +52,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
   Widget createRegistrationPage() {
     return Builder(
       builder: (BuildContext _context) {
+        SnackBarService.instance.buildContext = _context;
         _auth = Provider.of<AuthProvider>(_context);
         return Container(
           height: _deviceHeight * 0.75,

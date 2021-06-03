@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 
+import '../services/database_service.dart';
 import '../services/snackbar_service.dart';
 import '../services/navigation_service.dart';
 
@@ -26,17 +27,18 @@ class AuthProvider extends ChangeNotifier {
     // _checkCurrentUserAuthentification();
   }
 
-  void _autoLogin() {
+  void _autoLogin() async {
     if (user != null) {
-      NavigationService.instance.navigateToReplacement("home");
+      await DatabaseService.instance.updateUserLastSeenTime(user.uid);
+      return NavigationService.instance.navigateToReplacement("home");
     }
   }
 
-  void _checkCurrentUserAuthentification() {
+  void _checkCurrentUserAuthentification() async {
     user = _auth.currentUser;
     if (user != null) {
       notifyListeners();
-      _autoLogin();
+      await _autoLogin();
     }
   }
 
@@ -50,7 +52,7 @@ class AuthProvider extends ChangeNotifier {
       status = AuthStatus.Authenticated;
       SnackBarService.instance
           .showSnackBarSuccess("Добро пожаловать, ${user.email}");
-      //Обновить время
+      await DatabaseService.instance.updateUserLastSeenTime(user.uid);
       NavigationService.instance.navigateToReplacement("home");
     } catch (e) {
       status = AuthStatus.Error;
@@ -72,7 +74,7 @@ class AuthProvider extends ChangeNotifier {
       await onSuccess(user.uid);
       SnackBarService.instance
           .showSnackBarSuccess("Успешная регистрация, ${user.email}");
-      //Обновить время
+      await DatabaseService.instance.updateUserLastSeenTime(user.uid);
       NavigationService.instance.goBack();
       NavigationService.instance.navigateToReplacement("home");
     } catch (e) {
