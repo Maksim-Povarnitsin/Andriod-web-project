@@ -235,6 +235,8 @@ class _ConversationPageState extends State<ConversationPage> {
                 type: MessageType.Text,
               ),
             );
+            _formKey.currentState.reset();
+            FocusScope.of(_context).unfocus();
           }
         },
       ),
